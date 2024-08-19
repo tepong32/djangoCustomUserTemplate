@@ -13,26 +13,30 @@ class CustomUserManager(UserManager):
 		return user
 
 	def create_user(self, email=None, password=None, **extra_fields):
-		extra_fields.set_default('is_staff', False)
-		extra_fields.set_default('is_admin', False)
+		extra_fields.setdefault('is_staff', False)
+		extra_fields.setdefault('is_superuser', False)
 		return self._create_user(email, password, **extra_fields)
 
 	def create_superuser(self, email=None, password=None, **extra_fields):
-		extra_fields.set_default('is_staff', True)
-		extra_fields.set_default('is_admin', True)
+		extra_fields.setdefault('is_staff', True)
+		extra_fields.setdefault('is_superuser', True)
 		return self._create_user(email, password, **extra_fields)
 
 
-class NormalizedCharField(models.CharField):
-	"""Custom CharField to make sure that fields that will use the CharField will have its data cleaned."""
+###### not working as intended so removed
+# class NormalizedCharField(models.CharField):
+# 	"""Custom CharField to make sure that fields that will use the CharField will have its data cleaned."""
 	
-	def to_python(self, value):
-		return value.strip().title()
+# 	def to_python(self, value):
+# 		if isinstance(value, bool):
+# 			# Convert boolean to string representation
+# 			value = str(value)
+# 			return value.strip().title()
 
 
 class User(AbstractBaseUser, PermissionsMixin):
 	email = models.EmailField(blank=True, default="", unique=True)
-	name = NormalizedCharField(max_length=255, blank=True, default=True)
+	name = models.CharField(max_length=255, blank=True, default=True)
 	is_active = models.BooleanField(default=True)
 	is_staff = models.BooleanField(default=False)
 	is_superuser = models.BooleanField(default=False)
@@ -49,7 +53,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 	def get_full_name(self):
 		return self.name
 	def get_short_name(self):
-		return self.name
+		return self.name or self.email.split('@')[0]
 
 
 

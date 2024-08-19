@@ -2,10 +2,11 @@
 
 <br>
 
-{{users}}
+users list: <b>{{users}}</b>
 
 <br>
-
+<hr>
 {% for u in users %}
-	{{u.name}}
+	username/email: <b>{{u.email}}</b> <br>
+	name: <b>{{u.name}}</b> <br>
 {% endfor %}
