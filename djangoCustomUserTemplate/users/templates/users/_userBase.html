@@ -1,12 +1,29 @@
 <h1>Gujab!</h1>
 
-<br>
+<hr>
 
+Base html for the users app
+<hr>
 users list: <b>{{users}}</b>
-
 <br>
+user count: <b>{{usersCount}}</b>
 <hr>
 {% for u in users %}
 	username/email: <b>{{u.email}}</b> <br>
 	name: <b>{{u.name}}</b> <br>
 {% endfor %}
+<hr>
+<hr>
+
+
+{% block content %}
+
+{% endblock content %}
+
+<script src="https://cdn.jsdelivr.net/npm/darkmode-js@1.5.7/lib/darkmode-js.min.js"></script>
+<script>
+  function addDarkmodeWidget() {
+    new Darkmode().showWidget();
+  }
+  window.addEventListener('load', addDarkmodeWidget);
+</script>

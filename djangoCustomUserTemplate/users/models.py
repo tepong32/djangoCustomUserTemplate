@@ -58,3 +58,50 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 
+
+
+
+class Profile(models.Model):
+
+	# profile-related stuffs 
+	user = models.OneToOneField(User, on_delete=models.CASCADE) # if the user is deleted, the profile will be deleted, too
+	alias = models.CharField(blank=True, null=True, max_length=50, unique=True, verbose_name="Alias: ",help_text="(-_-)") 
+	# Male = "Male"
+	# Female = "Female"
+	# Neutral = "Neutral"
+	# gender_choice = [
+	# 	(Male, "Male"),
+	# 	(Female, "Female"),
+	# 	(Neutral, "Neutral")
+	# ]
+	# gender = models.CharField(
+	# 	max_length=10,
+	# 	choices=gender_choice,
+	# 	default=Neutral, verbose_name="Gender: "
+	# )
+	location = models.CharField(blank=True, null=True, max_length=255, default="Uh...Earth?", verbose_name="Location: ", help_text="Do you want to fill this out? :D")
+
+	# Other information that can be displayed on a user profile page:
+	quote = models.CharField(blank=True, max_length=300, verbose_name="Quote you live by: ", help_text="'Pampa-Angas'")
+	about_me = models.TextField(blank=True, default="...Default About Me text", help_text="Tell us something about you.")
+	
+	def dp_directory_path(instance, filename):
+		# file will be uploaded to MEDIA_ROOT/DP/<username>/<filename> ---check settings.py. MEDIA_ROOT=media for the exact folder/location
+		return 'users/{}/DP/{}'.format(instance.user.username, filename)
+	image = models.ImageField(default='defaults/round.png', blank=True, upload_to=dp_directory_path, verbose_name="Profile Picture: ", help_text='Help us recognize you. ;)')
+
+
+	def __str__(self):
+		return f"{self.user.username}"
+
+	def get_absolute_url(self):
+		return reverse('profile', kwargs={'pk': self.pk})
+
+	def save(self, *args, **kwargs):		# for resizing/downsizing images
+		super(Profile, self).save(*args, **kwargs)
+
+		img = Image.open(self.image.path)	# open the image of the current instance
+		if img.height > 600 or img.width > 600:	# for sizing-down the images to conserve memory in the server
+			output_size = (600, 600)
+			img.thumbnail(output_size)
+			img.save(self.image.path)
