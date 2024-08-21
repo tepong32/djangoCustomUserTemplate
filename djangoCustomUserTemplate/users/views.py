@@ -1,5 +1,5 @@
 
-
+from django.contrib import messages
 from django.contrib.auth import views as auth_views     # for auths for logins and logouts
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -28,8 +28,15 @@ def register(request):
 			email = form.cleaned_data.get("email")
 			messages.success(request, f"Account created! You can now log in.")
 			return redirect("login")
+		else:
+			for field, errors in form.errors.items():
+				for error in errors:
+					messages.error(request, f"Error in {field}: {error}")
+
 	else:
 		form = UserRegisterForm()
+
+				
 	# arguments == "request", the_template, the_context(dictionary))
 	return render(request, 'auth/register.html', {'form': form})
 

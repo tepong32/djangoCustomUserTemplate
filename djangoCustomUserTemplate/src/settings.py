@@ -189,13 +189,15 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
-
-
-# edit this for customized ckeditor toolbar options
-# CKEDITOR_UPLOAD_PATH = "ckeditor_uploads/"
-# CKEDITOR_CONFIGS = {
-#     'awesome_ckeditor': {
-#         'toolbar': 'Basic',
-#     },
-# }
+### some more django-allauth settings. see https://docs.allauth.org/en/latest/account/configuration.html
+'''
+    will try to remove the custom user authentication views after successfully implementing these
+'''
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_PASSWORD_MIN_LENGTH = 8
 

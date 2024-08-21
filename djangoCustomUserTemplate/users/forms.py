@@ -12,11 +12,17 @@ class UserRegisterForm(UserCreationForm):
 	'''
 	### add fields to this form
 	email = forms.EmailField()
-	usable_password = None
+	usable_password = None # see https://stackoverflow.com/questions/78850636/what-is-password-based-authentication-in-the-usercreationform-in-django-and-how
 
 	class Meta:
 		model = User
 		fields = ["email", "password1", "password2", ] # "username" not in use
+
+	def clean_email(self):
+		email = self.cleaned_data.get('email')
+		if User.objects.filter(email=email).exists():
+			raise forms.ValidationError("This email is already registered.")
+			return email
 
 
 # after adding these forms, add it to the views.py
